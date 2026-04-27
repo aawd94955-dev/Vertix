@@ -468,7 +468,9 @@ const EVENTS = [
 function openEvent(idx) {
   const e = EVENTS[idx];
   const img = document.getElementById('evImg');
-  img.src = e.img; img.onerror = () => { img.style.display='none'; };
+  img.style.display = '';
+  img.src = e.img;
+  img.onerror = () => { img.style.display='none'; };
   document.getElementById('evBadge').textContent = e.badge;
   document.getElementById('evDate').textContent = e.date;
   document.getElementById('evStatus').textContent = e.status;
@@ -478,10 +480,16 @@ function openEvent(idx) {
     `<div class="ev-detail-row"><span class="ev-detail-label">${l}</span><span class="ev-detail-val">${v}</span></div>`).join('');
   const cta = document.getElementById('evCta');
   cta.textContent = e.cta; cta.href = e.ctaHref;
+  const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+  if (scrollbarWidth > 0) document.body.style.paddingRight = `${scrollbarWidth}px`;
   document.getElementById('evOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
-function closeEvent() { document.getElementById('evOverlay').classList.remove('open'); document.body.style.overflow = ''; }
+function closeEvent() {
+  document.getElementById('evOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  document.body.style.paddingRight = '';
+}
 function handleOverlayClick(e) { if (e.target === document.getElementById('evOverlay')) closeEvent(); }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeEvent(); });
 
