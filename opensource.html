@@ -3,563 +3,166 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>오픈소스 자료실 — Vertix</title>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>AI 데이터 학습 오픈소스 — Vertix</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --blue-50: #EFF6FF; --blue-100: #DBEAFE; --blue-200: #BFDBFE;
-    --blue-400: #60A5FA; --blue-500: #3B82F6; --blue-600: #2563EB;
-    --blue-700: #1D4ED8; --blue-900: #1E3A8A;
-    --gray-50: #F8FAFC; --gray-100: #F1F5F9; --gray-200: #E2E8F0;
-    --gray-400: #94A3B8; --gray-500: #64748B; --gray-600: #475569;
-    --gray-800: #1E293B; --gray-900: #0F172A;
-    --green-50: #F0FDF4; --green-100: #DCFCE7; --green-500: #22C55E; --green-600: #16A34A;
-    --purple-50: #FAF5FF; --purple-100: #F3E8FF; --purple-500: #A855F7; --purple-600: #9333EA;
-    --orange-50: #FFF7ED; --orange-100: #FFEDD5; --orange-500: #F97316; --orange-600: #EA580C;
+    --blue-400: #60A5FA; --blue-500: #3B82F6; --blue-600: #2563EB; --blue-700: #1D4ED8;
+    --gray-100: #F1F5F9; --gray-200: #E2E8F0; --gray-500: #64748B; --gray-800: #1E293B; --gray-900: #0F172A;
     --white: #FFFFFF;
-    --font-main: 'Sora', sans-serif;
-    --font-body: 'DM Sans', sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
+    --font-main: 'Sora', sans-serif; --font-body: 'DM Sans', sans-serif; --font-mono: 'JetBrains Mono', monospace;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; scrollbar-gutter: stable; }
   body { font-family: var(--font-body); background: var(--white); color: var(--gray-800); overflow-x: hidden; }
 
-  /* NAV */
   nav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 60px; height: 68px;
-    background: rgba(255,255,255,0.92); backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--gray-100);
+    height: 68px; padding: 0 60px; display: flex; align-items: center; justify-content: space-between;
+    background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--gray-100);
   }
   .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
   .nav-logo img { height: 32px; }
-  .nav-logo-text { font-family: var(--font-main); font-size: 20px; font-weight: 700; color: var(--blue-600); letter-spacing: -0.5px; }
-  .nav-links { display: flex; align-items: center; gap: 36px; list-style: none; }
-  .nav-links a {
-    font-size: 14px; font-weight: 500; color: var(--gray-600); text-decoration: none;
-    transition: color 0.2s; position: relative;
-  }
-  .nav-links a::after {
-    content: attr(data-text);
-    display: block; font-weight: 600;
-    height: 0; overflow: hidden; visibility: hidden; pointer-events: none;
-  }
-  .nav-links a:hover { color: var(--blue-600); }
-  .nav-links a.active { color: var(--blue-600); }
+  .nav-logo-text { font-family: var(--font-main); font-size: 20px; font-weight: 700; color: var(--blue-600); }
   .btn-login {
     font-size: 14px; font-weight: 500; color: var(--blue-600); text-decoration: none;
-    padding: 8px 20px; border: 1.5px solid var(--blue-200); border-radius: 8px;
-    transition: background 0.2s, border-color 0.2s; white-space: nowrap;
+    padding: 8px 20px; border: 1.5px solid var(--blue-200); border-radius: 8px; background: var(--white);
   }
-  .btn-login:hover { background: var(--blue-50); border-color: var(--blue-400); }
 
-  /* HERO */
   .hero {
-    padding: 120px 60px 80px;
-    background: linear-gradient(160deg, #F0F7FF 0%, #FFFFFF 50%, #EFF6FF 100%);
-    position: relative; overflow: hidden;
+    padding: 120px 60px 40px;
+    background: linear-gradient(160deg, #F0F7FF 0%, #FFFFFF 55%, #EFF6FF 100%);
   }
-  .hero::before {
-    content: ''; position: absolute; top: -150px; right: -150px;
-    width: 500px; height: 500px;
-    background: radial-gradient(circle, rgba(59,130,246,0.07) 0%, transparent 70%);
-    pointer-events: none;
-  }
-  .hero-inner { max-width: 700px; animation: fadeUp 0.7s ease both; }
   .back-link {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 13px; color: var(--gray-500); text-decoration: none;
-    margin-bottom: 28px; transition: color 0.2s;
-  }
-  .back-link:hover { color: var(--blue-600); }
-  .hero-badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: var(--blue-50); border: 1px solid var(--blue-200); color: var(--blue-600);
-    font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 20px;
-    margin-bottom: 20px; letter-spacing: 0.05em; text-transform: uppercase;
+    display: inline-flex; align-items: center; gap: 6px; margin-bottom: 20px;
+    font-size: 13px; color: var(--blue-600); text-decoration: none;
   }
   .hero h1 {
-    font-family: var(--font-main); font-size: clamp(32px, 4vw, 48px);
-    font-weight: 700; line-height: 1.15; letter-spacing: -1.2px;
-    color: var(--gray-900); margin-bottom: 16px;
+    font-family: var(--font-main); font-size: clamp(32px, 4vw, 44px);
+    font-weight: 700; color: var(--gray-900); letter-spacing: -1px; margin-bottom: 12px;
   }
-  .hero h1 span { color: var(--blue-600); }
-  .hero p { font-size: 16px; line-height: 1.7; color: var(--gray-600); max-width: 520px; }
+  .hero p { font-size: 16px; line-height: 1.7; color: var(--gray-500); max-width: 600px; }
 
-  /* FILTER & SEARCH BAR */
-  .toolbar {
-    padding: 32px 60px;
-    background: var(--white);
-    border-bottom: 1px solid var(--gray-100);
-    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
-    position: sticky; top: 68px; z-index: 50;
-    backdrop-filter: blur(12px);
-    background: rgba(255,255,255,0.95);
-  }
-  .search-wrap {
-    position: relative; flex: 1; min-width: 200px; max-width: 340px;
-  }
-  .search-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); pointer-events: none; }
-  .search-input {
-    width: 100%; padding: 10px 14px 10px 38px;
-    border: 1.5px solid var(--gray-200); border-radius: 8px;
-    font-family: var(--font-body); font-size: 14px; color: var(--gray-900);
-    background: var(--white); outline: none; transition: border-color 0.2s;
-  }
-  .search-input:focus { border-color: var(--blue-400); }
-  .search-input::placeholder { color: var(--gray-400); }
-  .filter-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
-  .filter-tab {
-    padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500;
-    cursor: pointer; transition: all 0.18s; border: 1.5px solid var(--gray-200);
-    background: var(--white); color: var(--gray-600);
-  }
-  .filter-tab:hover { border-color: var(--blue-300, #93C5FD); color: var(--blue-600); background: var(--blue-50); }
-  .filter-tab.active { background: var(--blue-600); color: white; border-color: var(--blue-600); }
-  .result-count { margin-left: auto; font-size: 13px; color: var(--gray-400); white-space: nowrap; }
+  .grid-section { padding: 24px 60px 80px; }
+  .resources-grid { max-width: 860px; }
 
-  /* GRID */
-  .grid-section { padding: 48px 60px 80px; }
-  .resources-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-
-  /* CARD */
   .res-card {
-    background: var(--white); border: 1.5px solid var(--gray-200);
-    border-radius: 14px; overflow: hidden;
-    transition: all 0.25s ease; cursor: pointer;
-    display: flex; flex-direction: column;
-    animation: fadeUp 0.5s ease both;
+    background: var(--white); border: 1.5px solid var(--blue-200); border-radius: 14px; overflow: hidden;
+    display: flex; flex-direction: column; cursor: pointer;
   }
-  .res-card:hover { border-color: var(--blue-300, #93C5FD); transform: translateY(-3px); box-shadow: 0 12px 32px rgba(37,99,235,0.08); }
   .res-card-header { padding: 22px 22px 0; display: flex; align-items: flex-start; gap: 14px; }
   .res-icon {
     width: 44px; height: 44px; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; background: var(--blue-50); flex-shrink: 0;
   }
-  .res-icon.blue { background: var(--blue-50); }
-  .res-icon.green { background: var(--green-50); }
-  .res-icon.purple { background: var(--purple-50); }
-  .res-icon.orange { background: var(--orange-50); }
-  .res-meta { flex: 1; min-width: 0; }
-  .res-category {
-    font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
-    margin-bottom: 4px;
+  .res-category { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--blue-600); margin-bottom: 4px; }
+  .res-title { font-family: var(--font-main); font-size: 18px; font-weight: 700; color: var(--gray-900); }
+  .res-card-body { padding: 14px 22px; }
+  .res-desc { font-size: 14px; color: var(--gray-500); line-height: 1.7; margin-bottom: 14px; }
+  .res-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .res-tag {
+    font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px;
+    background: var(--blue-50); color: var(--blue-600); border: 1px solid var(--blue-100);
   }
-  .res-category.blue { color: var(--blue-500); }
-  .res-category.green { color: var(--green-600); }
-  .res-category.purple { color: var(--purple-600); }
-  .res-category.orange { color: var(--orange-600); }
-  .res-title { font-family: var(--font-main); font-size: 15px; font-weight: 600; color: var(--gray-900); line-height: 1.35; letter-spacing: -0.2px; }
-  .res-card-body { padding: 14px 22px; flex: 1; }
-  .res-desc { font-size: 13px; color: var(--gray-600); line-height: 1.65; margin-bottom: 14px; }
-  .res-tags { display: flex; gap: 5px; flex-wrap: wrap; }
-  .res-tag { font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 20px; }
-  .res-tag.blue { background: var(--blue-50); color: var(--blue-600); border: 1px solid var(--blue-100); }
-  .res-tag.green { background: var(--green-50); color: var(--green-600); border: 1px solid var(--green-100); }
-  .res-tag.purple { background: var(--purple-50); color: var(--purple-600); border: 1px solid var(--purple-100); }
-  .res-tag.orange { background: var(--orange-50); color: var(--orange-600); border: 1px solid var(--orange-100); }
   .res-card-footer {
-    padding: 14px 22px;
-    border-top: 1px solid var(--gray-100);
+    padding: 14px 22px; border-top: 1px solid var(--gray-100);
     display: flex; align-items: center; justify-content: space-between; gap: 8px;
   }
-  .res-lang {
-    display: flex; align-items: center; gap: 6px;
-    font-family: var(--font-mono); font-size: 12px; color: var(--gray-500);
-  }
-  .res-lang-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .res-lang { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 12px; color: var(--gray-500); }
+  .res-lang-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue-500); }
   .copy-btn {
-    display: flex; align-items: center; gap: 5px;
-    padding: 6px 12px; border-radius: 6px;
-    font-family: var(--font-body); font-size: 12px; font-weight: 500;
-    border: 1.5px solid var(--gray-200); background: var(--white);
-    color: var(--gray-600); cursor: pointer; transition: all 0.18s;
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 6px 12px; border-radius: 6px; border: 1.5px solid var(--blue-200);
+    background: var(--white); color: var(--blue-600); font-size: 12px; font-weight: 500; cursor: pointer;
   }
-  .copy-btn:hover { border-color: var(--blue-400); color: var(--blue-600); background: var(--blue-50); }
-  .copy-btn.copied { border-color: var(--green-500); color: var(--green-600); background: var(--green-50); }
 
-  /* CODE MODAL */
   .code-overlay {
     display: none; position: fixed; inset: 0; z-index: 500;
-    background: rgba(15,23,42,0.6); backdrop-filter: blur(6px);
-    align-items: center; justify-content: center; padding: 20px;
+    background: rgba(15,23,42,0.6); align-items: center; justify-content: center; padding: 20px;
   }
-  .code-overlay.open { display: flex; animation: overlayIn 0.2s ease both; }
+  .code-overlay.open { display: flex; }
   .code-modal {
-    background: var(--gray-900); border-radius: 16px;
-    max-width: 720px; width: 100%;
-    animation: modalPop 0.3s cubic-bezier(.34,1.56,.64,1) both;
-    overflow: hidden; border: 1px solid rgba(255,255,255,0.07);
-    max-height: 88vh; display: flex; flex-direction: column;
+    background: #0F172A; border-radius: 16px; max-width: 760px; width: 100%;
+    overflow: hidden; border: 1px solid rgba(255,255,255,0.08); max-height: 88vh; display: flex; flex-direction: column;
   }
   .code-modal-header {
-    padding: 18px 24px;
-    display: flex; align-items: center; justify-content: space-between;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
-    background: rgba(255,255,255,0.03);
+    padding: 18px 24px; display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03);
   }
-  .code-modal-title { font-family: var(--font-main); font-size: 15px; font-weight: 600; color: white; }
+  .code-modal-title { font-family: var(--font-main); font-size: 15px; font-weight: 600; color: #FFFFFF; }
   .code-modal-actions { display: flex; align-items: center; gap: 8px; }
-  .modal-copy-btn {
-    display: flex; align-items: center; gap: 5px;
-    padding: 6px 14px; border-radius: 6px;
-    font-family: var(--font-body); font-size: 12px; font-weight: 500;
-    border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.07);
-    color: rgba(255,255,255,0.8); cursor: pointer; transition: all 0.18s;
+  .modal-copy-btn, .code-modal-close {
+    border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.07);
+    color: rgba(255,255,255,0.9); cursor: pointer; font-size: 12px; font-family: var(--font-body);
   }
-  .modal-copy-btn:hover { background: rgba(255,255,255,0.12); color: white; }
-  .modal-copy-btn.copied { border-color: var(--green-500); color: var(--green-400, #4ade80); background: rgba(34,197,94,0.1); }
-  .code-modal-close {
-    width: 30px; height: 30px; border-radius: 6px;
-    background: rgba(255,255,255,0.07); border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    color: rgba(255,255,255,0.6); font-size: 14px; transition: all 0.18s;
-  }
-  .code-modal-close:hover { background: rgba(255,255,255,0.12); color: white; }
-  .code-modal-body { padding: 0; overflow-y: auto; flex: 1; }
+  .modal-copy-btn { padding: 6px 14px; display: inline-flex; align-items: center; gap: 5px; }
+  .code-modal-close { width: 30px; height: 30px; font-size: 14px; }
+  .code-modal-body { overflow-y: auto; }
   .code-block {
-    font-family: var(--font-mono); font-size: 13px; line-height: 1.75;
-    color: #E2E8F0; padding: 28px;
-    white-space: pre; overflow-x: auto; tab-size: 2;
+    font-family: var(--font-mono); font-size: 13px; line-height: 1.75; color: #E2E8F0;
+    padding: 28px; white-space: pre; overflow-x: auto;
   }
-  /* Syntax highlight colors */
-  .kw { color: #93C5FD; }  /* keyword blue */
-  .fn { color: #86EFAC; }  /* function green */
-  .st { color: #FCA5A5; }  /* string red-ish */
-  .cm { color: #64748B; font-style: italic; }  /* comment */
-  .nm { color: #FCD34D; }  /* number/const yellow */
-  .tp { color: #C4B5FD; }  /* type purple */
 
-  /* NO RESULTS */
-  .no-results { text-align: center; padding: 80px 20px; color: var(--gray-400); display: none; }
-  .no-results svg { margin-bottom: 16px; }
-  .no-results p { font-size: 15px; }
-
-  /* FOOTER */
-  footer { background: var(--gray-900); color: white; padding: 40px 60px; }
+  footer { background: var(--gray-900); color: white; padding: 36px 60px; }
   .footer-bottom { display: flex; align-items: center; justify-content: space-between; }
-  .footer-bottom p { font-size: 13px; color: rgba(255,255,255,0.35); }
-
-  /* ANIMATIONS */
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes modalPop { from { opacity: 0; transform: scale(0.93) translateY(16px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+  .footer-bottom p { font-size: 13px; color: rgba(255,255,255,0.45); }
 
   @media (max-width: 900px) {
     nav { padding: 0 24px; }
-    .hero { padding: 100px 24px 60px; }
-    .toolbar { padding: 20px 24px; }
-    .grid-section { padding: 32px 24px 60px; }
-    .resources-grid { grid-template-columns: repeat(2, 1fr); }
-    footer { padding: 32px 24px; }
-  }
-  @media (max-width: 600px) {
-    .resources-grid { grid-template-columns: 1fr; }
-    .nav-links { display: none; }
+    .hero { padding: 100px 24px 32px; }
+    .grid-section { padding: 24px 24px 56px; }
+    footer { padding: 28px 24px; }
   }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
   <a href="index.html" class="nav-logo">
     <img src="assets/logo.png" alt="Vertix" onerror="this.style.display='none'">
     <span class="nav-logo-text">Vertix</span>
   </a>
-  <ul class="nav-links">
-    <li><a href="index.html#events" data-text="이벤트">이벤트</a></li>
-    <li><a href="index.html#projects" data-text="프로젝트">프로젝트</a></li>
-    <li><a href="opensource.html" class="active" data-text="오픈소스 자료실">오픈소스 자료실</a></li>
-  </ul>
   <a href="login.html" class="btn-login">로그인</a>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
-  <div class="hero-inner">
-    <a href="index.html" class="back-link">← 홈으로</a>
-    <div class="hero-badge">Open Source</div>
-    <h1>오픈소스 <span>자료실</span></h1>
-    <p>Vertix 팀이 직접 사용하고 검증한 코드 스니펫, 유틸리티 함수, 컴포넌트를 자유롭게 복사해 사용하세요.</p>
-  </div>
+  <a href="index.html" class="back-link">← 홈으로</a>
+  <h1>AI 데이터 학습 <span style="color:#2563EB;">오픈소스</span></h1>
+  <p>실무에서 바로 사용할 수 있는 데이터셋 전처리 파이프라인 예시 코드입니다. 카드 1개만 유지했습니다.</p>
 </section>
 
-<!-- TOOLBAR -->
-<div class="toolbar">
-  <div class="search-wrap">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input class="search-input" type="text" placeholder="자료 검색..." id="searchInput" oninput="filterCards()">
-  </div>
-  <div class="filter-tabs">
-    <button class="filter-tab active" onclick="setFilter('all', this)">전체</button>
-    <button class="filter-tab" onclick="setFilter('javascript', this)">JavaScript</button>
-    <button class="filter-tab" onclick="setFilter('css', this)">CSS</button>
-    <button class="filter-tab" onclick="setFilter('react', this)">React</button>
-    <button class="filter-tab" onclick="setFilter('python', this)">Python</button>
-    <button class="filter-tab" onclick="setFilter('utility', this)">유틸리티</button>
-  </div>
-  <span class="result-count" id="resultCount"></span>
-</div>
-
-<!-- GRID -->
 <section class="grid-section">
-  <div class="resources-grid" id="resourcesGrid">
-
-    <!-- Card 1 -->
-    <div class="res-card" data-category="javascript" data-tags="javascript debounce 최적화 이벤트" data-code-id="0">
+  <div class="resources-grid">
+    <div class="res-card" id="resourceCard">
       <div class="res-card-header">
-        <div class="res-icon blue">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <div class="res-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L2 9l10 6 10-6-10-6z"></path><path d="M2 15l10 6 10-6"></path></svg>
         </div>
-        <div class="res-meta">
-          <div class="res-category blue">JavaScript</div>
-          <div class="res-title">Debounce 함수</div>
+        <div>
+          <div class="res-category">AI / Python</div>
+          <div class="res-title">AI 데이터 학습 오픈소스</div>
         </div>
       </div>
       <div class="res-card-body">
-        <div class="res-desc">입력 이벤트, 리사이즈 등 연속 호출을 지연시켜 성능을 최적화하는 debounce 유틸리티 함수입니다.</div>
+        <div class="res-desc">CSV 데이터 로드, 결측치 처리, 스케일링, 학습/검증 데이터 분할까지 한 번에 처리하는 기본 학습 파이프라인입니다.</div>
         <div class="res-tags">
-          <span class="res-tag blue">최적화</span>
-          <span class="res-tag blue">이벤트</span>
+          <span class="res-tag">데이터 전처리</span>
+          <span class="res-tag">머신러닝</span>
+          <span class="res-tag">파이썬</span>
         </div>
       </div>
       <div class="res-card-footer">
-        <div class="res-lang"><div class="res-lang-dot" style="background:#F7DF1E"></div>JavaScript</div>
-        <button class="copy-btn" onclick="copySnippet(0, this)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        <div class="res-lang"><span class="res-lang-dot"></span>Python</div>
+        <button class="copy-btn" id="copyBtn" onclick="copySnippet(event)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
           복사
         </button>
       </div>
     </div>
-
-    <!-- Card 2 -->
-    <div class="res-card" data-category="javascript" data-tags="javascript throttle 스크롤 성능" data-code-id="1">
-      <div class="res-card-header">
-        <div class="res-icon blue">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-        </div>
-        <div class="res-meta">
-          <div class="res-category blue">JavaScript</div>
-          <div class="res-title">Throttle 함수</div>
-        </div>
-      </div>
-      <div class="res-card-body">
-        <div class="res-desc">스크롤, 마우스무브 등 고빈도 이벤트를 일정 간격으로 제한하는 throttle 함수입니다.</div>
-        <div class="res-tags">
-          <span class="res-tag blue">성능</span>
-          <span class="res-tag blue">스크롤</span>
-        </div>
-      </div>
-      <div class="res-card-footer">
-        <div class="res-lang"><div class="res-lang-dot" style="background:#F7DF1E"></div>JavaScript</div>
-        <button class="copy-btn" onclick="copySnippet(1, this)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-          복사
-        </button>
-      </div>
-    </div>
-
-    <!-- Card 3 -->
-    <div class="res-card" data-category="css" data-tags="css 애니메이션 페이드 트랜지션" data-code-id="2">
-      <div class="res-card-header">
-        <div class="res-icon purple">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A855F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        </div>
-        <div class="res-meta">
-          <div class="res-category purple">CSS</div>
-          <div class="res-title">Fade In Up 애니메이션</div>
-        </div>
-      </div>
-      <div class="res-card-body">
-        <div class="res-desc">스크롤 시 요소가 아래에서 위로 부드럽게 나타나는 CSS 애니메이션 스니펫입니다.</div>
-        <div class="res-tags">
-          <span class="res-tag purple">애니메이션</span>
-          <span class="res-tag purple">트랜지션</span>
-        </div>
-      </div>
-      <div class="res-card-footer">
-        <div class="res-lang"><div class="res-lang-dot" style="background:#563D7C"></div>CSS</div>
-        <button class="copy-btn" onclick="copySnippet(2, this)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-          복사
-        </button>
-      </div>
-    </div>
-
-    <!-- Card 4 -->
-    <div class="res-card" data-category="react" data-tags="react hook localStorage 로컬스토리지 상태" data-code-id="3">
-      <div class="res-card-header">
-        <div class="res-icon blue">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
-        </div>
-        <div class="res-meta">
-          <div class="res-category blue">React</div>
-          <div class="res-title">useLocalStorage Hook</div>
-        </div>
-      </div>
-      <div class="res-card-body">
-        <div class="res-desc">localStorage와 React 상태를 동기화하는 커스텀 훅입니다. 새로고침 후에도 상태가 유지됩니다.</div>
-        <div class="res-tags">
-          <span class="res-tag blue">Hook</span>
-          <span class="res-tag blue">상태관리</span>
-        </div>
-      </div>
-      <div class="res-card-footer">
-        <div class="res-lang"><div class="res-lang-dot" style="background:#61DAFB"></div>React</div>
-        <button class="copy-btn" onclick="copySnippet(3, this)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-          복사
-        </button>
-      </div>
-    </div>
-
-    <!-- Card 5 -->
-    <div class="res-card" data-category="python" data-tags="python 날짜 시간 포맷 유틸리티" data-code-id="4">
-      <div class="res-card-header">
-        <div class="res-icon green">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        </div>
-        <div class="res-meta">
-          <div class="res-category green">Python</div>
-          <div class="res-title">날짜 포맷 유틸리티</div>
-        </div>
-      </div>
-      <div class="res-card-body">
-        <div class="res-desc">다양한 날짜 형식 변환과 상대적 시간 표현("3분 전", "2일 후")을 처리하는 Python 유틸리티 모음입니다.</div>
-        <div class="res-tags">
-          <span class="res-tag green">날짜/시간</span>
-          <span class="res-tag green">유틸리티</span>
-        </div>
-      </div>
-      <div class="res-card-footer">
-        <div class="res-lang"><div class="res-lang-dot" style="background:#3572A5"></div>Python</div>
-        <button class="copy-btn" onclick="copySnippet(4, this)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-          복사
-        </button>
-      </div>
-    </div>
-
-    <!-- Card 6 -->
-    <div class="res-card" data-category="css" data-tags="css 그라디언트 배경 글래스모피즘" data-code-id="5">
-      <div class="res-card-header">
-        <div class="res-icon purple">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A855F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
-        </div>
-        <div class="res-meta">
-          <div class="res-category purple">CSS</div>
-          <div class="res-title">Glassmorphism 카드</div>
-        </div>
-      </div>
-      <div class="res-card-body">
-        <div class="res-desc">backdrop-filter와 반투명 배경을 활용한 글래스모피즘 스타일의 카드 컴포넌트 CSS입니다.</div>
-        <div class="res-tags">
-          <span class="res-tag purple">UI 컴포넌트</span>
-          <span class="res-tag purple">글래스모피즘</span>
-        </div>
-      </div>
-      <div class="res-card-footer">
-        <div class="res-lang"><div class="res-lang-dot" style="background:#563D7C"></div>CSS</div>
-        <button class="copy-btn" onclick="copySnippet(5, this)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-          복사
-        </button>
-      </div>
-    </div>
-
-    <!-- Card 7 -->
-    <div class="res-card" data-category="utility" data-tags="javascript 클립보드 복사 유틸리티" data-code-id="6">
-      <div class="res-card-header">
-        <div class="res-icon orange">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-        </div>
-        <div class="res-meta">
-          <div class="res-category orange">유틸리티</div>
-          <div class="res-title">클립보드 복사 함수</div>
-        </div>
-      </div>
-      <div class="res-card-body">
-        <div class="res-desc">Clipboard API와 fallback을 모두 지원하는 안전한 클립보드 복사 유틸리티 함수입니다.</div>
-        <div class="res-tags">
-          <span class="res-tag orange">클립보드</span>
-          <span class="res-tag orange">크로스브라우저</span>
-        </div>
-      </div>
-      <div class="res-card-footer">
-        <div class="res-lang"><div class="res-lang-dot" style="background:#F7DF1E"></div>JavaScript</div>
-        <button class="copy-btn" onclick="copySnippet(6, this)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-          복사
-        </button>
-      </div>
-    </div>
-
-    <!-- Card 8 -->
-    <div class="res-card" data-category="react" data-tags="react intersection observer 스크롤 페이드인" data-code-id="7">
-      <div class="res-card-header">
-        <div class="res-icon blue">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/></svg>
-        </div>
-        <div class="res-meta">
-          <div class="res-category blue">React</div>
-          <div class="res-title">useIntersectionObserver</div>
-        </div>
-      </div>
-      <div class="res-card-body">
-        <div class="res-desc">Intersection Observer API를 React Hook으로 감싼 유틸리티입니다. 스크롤 애니메이션 등에 활용하세요.</div>
-        <div class="res-tags">
-          <span class="res-tag blue">Hook</span>
-          <span class="res-tag blue">스크롤</span>
-        </div>
-      </div>
-      <div class="res-card-footer">
-        <div class="res-lang"><div class="res-lang-dot" style="background:#61DAFB"></div>React</div>
-        <button class="copy-btn" onclick="copySnippet(7, this)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-          복사
-        </button>
-      </div>
-    </div>
-
-    <!-- Card 9 -->
-    <div class="res-card" data-category="python" data-tags="python api fetch requests 비동기 유틸리티" data-code-id="8">
-      <div class="res-card-header">
-        <div class="res-icon green">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
-        </div>
-        <div class="res-meta">
-          <div class="res-category green">Python</div>
-          <div class="res-title">HTTP 요청 래퍼</div>
-        </div>
-      </div>
-      <div class="res-card-body">
-        <div class="res-desc">재시도 로직, 타임아웃, 에러 핸들링이 포함된 requests 기반 HTTP 클라이언트 래퍼입니다.</div>
-        <div class="res-tags">
-          <span class="res-tag green">HTTP</span>
-          <span class="res-tag green">API</span>
-        </div>
-      </div>
-      <div class="res-card-footer">
-        <div class="res-lang"><div class="res-lang-dot" style="background:#3572A5"></div>Python</div>
-        <button class="copy-btn" onclick="copySnippet(8, this)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-          복사
-        </button>
-      </div>
-    </div>
-
-  </div>
-  <div class="no-results" id="noResults">
-    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <p>검색 결과가 없습니다.</p>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
   <div class="footer-bottom">
     <p>© 2025 Vertix. All rights reserved.</p>
@@ -567,14 +170,13 @@
   </div>
 </footer>
 
-<!-- CODE MODAL -->
 <div class="code-overlay" id="codeOverlay" onclick="handleOverlay(event)">
   <div class="code-modal">
     <div class="code-modal-header">
-      <span class="code-modal-title" id="modalTitle"></span>
+      <span class="code-modal-title">AI 데이터 학습 오픈소스</span>
       <div class="code-modal-actions">
-        <button class="modal-copy-btn" id="modalCopyBtn" onclick="copyFromModal()">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        <button class="modal-copy-btn" id="modalCopyBtn" onclick="copyFromModal(event)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
           복사하기
         </button>
         <button class="code-modal-close" onclick="closeModal()">✕</button>
@@ -587,512 +189,68 @@
 </div>
 
 <script>
-// ─── CODE SNIPPETS ───────────────────────────────────────────────
-const SNIPPETS = [
-  {
-    title: 'Debounce 함수',
-    code: `/**
- * Debounce: 연속 호출을 지연시켜 마지막 호출만 실행합니다.
- * @param {Function} fn - 실행할 함수
- * @param {number} delay - 지연 시간 (ms)
- * @returns {Function} debounced 함수
- */
-function debounce(fn, delay = 300) {
-  let timer = null;
+const SNIPPET = `import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 
-  return function (...args) {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      fn.apply(this, args);
-    }, delay);
-  };
-}
+def build_training_data(path):
+    df = pd.read_csv(path)
+    df = df.dropna()
 
-// ── 사용 예시 ──────────────────────────────────────
-const handleSearch = debounce((value) => {
-  console.log('검색:', value);
-  // fetch('/api/search?q=' + value);
-}, 400);
+    X = df.drop(columns=["label"])
+    y = df["label"]
 
-document.querySelector('#searchInput')
-  .addEventListener('input', (e) => handleSearch(e.target.value));`
-  },
-  {
-    title: 'Throttle 함수',
-    code: `/**
- * Throttle: 일정 시간 간격으로만 함수를 실행합니다.
- * @param {Function} fn - 실행할 함수
- * @param {number} limit - 실행 간격 (ms)
- * @returns {Function} throttled 함수
- */
-function throttle(fn, limit = 200) {
-  let inThrottle = false;
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
 
-  return function (...args) {
-    if (!inThrottle) {
-      fn.apply(this, args);
-      inThrottle = true;
-      setTimeout(() => { inThrottle = false; }, limit);
-    }
-  };
-}
-
-// ── 사용 예시 ──────────────────────────────────────
-const onScroll = throttle(() => {
-  const scrollY = window.scrollY;
-  console.log('scrollY:', scrollY);
-}, 100);
-
-window.addEventListener('scroll', onScroll);`
-  },
-  {
-    title: 'Fade In Up 애니메이션',
-    code: `/* ── Fade In Up 애니메이션 ── */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* 기본 클래스: JS로 .visible 추가 시 애니메이션 실행 */
-.fade-in {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-.fade-in.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* 딜레이 유틸리티 */
-.delay-100 { transition-delay: 0.1s; }
-.delay-200 { transition-delay: 0.2s; }
-.delay-300 { transition-delay: 0.3s; }
-
-/* ── JavaScript (Intersection Observer) ── */
-/*
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(el => {
-    if (el.isIntersecting) el.target.classList.add('visible');
-  });
-}, { threshold: 0.12 });
-
-document.querySelectorAll('.fade-in')
-  .forEach(el => observer.observe(el));
-*/`
-  },
-  {
-    title: 'useLocalStorage Hook',
-    code: `import { useState, useEffect } from 'react';
-
-/**
- * useLocalStorage: localStorage와 동기화되는 React 상태 훅
- * @param {string} key - localStorage 키
- * @param {any} initialValue - 초기값
- */
-function useLocalStorage(key, initialValue) {
-  const [storedValue, setStoredValue] = useState(() => {
-    try {
-      const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
-      console.warn('useLocalStorage 읽기 오류:', error);
-      return initialValue;
-    }
-  });
-
-  const setValue = (value) => {
-    try {
-      const valueToStore =
-        value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-      window.localStorage.setItem(key, JSON.stringify(valueToStore));
-    } catch (error) {
-      console.warn('useLocalStorage 쓰기 오류:', error);
-    }
-  };
-
-  return [storedValue, setValue];
-}
-
-// ── 사용 예시 ──────────────────────────────────────
-function App() {
-  const [theme, setTheme] = useLocalStorage('theme', 'light');
-
-  return (
-    <button onClick={() =>
-      setTheme(t => t === 'light' ? 'dark' : 'light')
-    }>
-      현재 테마: {theme}
-    </button>
-  );
-}
-
-export default useLocalStorage;`
-  },
-  {
-    title: '날짜 포맷 유틸리티',
-    code: `from datetime import datetime, timezone
-from typing import Optional
-
-def format_date(dt: datetime, fmt: str = "%Y.%m.%d") -> str:
-    """datetime을 지정한 포맷 문자열로 변환합니다."""
-    return dt.strftime(fmt)
-
-
-def relative_time(dt: datetime) -> str:
-    """
-    datetime을 상대적 시간 문자열로 변환합니다.
-    예: '방금 전', '3분 전', '2일 전', '3주 전'
-    """
-    now = datetime.now(timezone.utc)
-    if dt.tzinfo is None:
-        dt = dt.replace(tzinfo=timezone.utc)
-
-    diff = now - dt
-    seconds = int(diff.total_seconds())
-
-    if seconds < 60:
-        return "방금 전"
-    elif seconds < 3600:
-        minutes = seconds // 60
-        return f"{minutes}분 전"
-    elif seconds < 86400:
-        hours = seconds // 3600
-        return f"{hours}시간 전"
-    elif seconds < 604800:
-        days = seconds // 86400
-        return f"{days}일 전"
-    elif seconds < 2592000:
-        weeks = seconds // 604800
-        return f"{weeks}주 전"
-    elif seconds < 31536000:
-        months = seconds // 2592000
-        return f"{months}개월 전"
-    else:
-        years = seconds // 31536000
-        return f"{years}년 전"
-
-
-# ── 사용 예시 ─────────────────────────────────────
-if __name__ == "__main__":
-    from datetime import timedelta
-    now = datetime.now(timezone.utc)
-    print(format_date(now))               # 2025.04.27
-    print(relative_time(now - timedelta(minutes=5)))   # 5분 전
-    print(relative_time(now - timedelta(days=2)))      # 2일 전`
-  },
-  {
-    title: 'Glassmorphism 카드',
-    code: `/* ── Glassmorphism 카드 컴포넌트 ── */
-
-/* 배경에 그라디언트나 이미지가 있어야 효과가 잘 보입니다 */
-.glass-card {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 16px;
-  box-shadow:
-    0 4px 24px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  padding: 28px;
-  transition: all 0.3s ease;
-}
-
-.glass-card:hover {
-  background: rgba(255, 255, 255, 0.22);
-  border-color: rgba(255, 255, 255, 0.35);
-  transform: translateY(-4px);
-  box-shadow:
-    0 16px 40px rgba(0, 0, 0, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5);
-}
-
-/* 다크 배경용 변형 */
-.glass-card--dark {
-  background: rgba(15, 23, 42, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: white;
-}`
-  },
-  {
-    title: '클립보드 복사 함수',
-    code: `/**
- * copyToClipboard: Clipboard API + execCommand fallback
- * @param {string} text - 복사할 텍스트
- * @returns {Promise<boolean>} 성공 여부
- */
-async function copyToClipboard(text) {
-  // 최신 브라우저: Clipboard API
-  if (navigator.clipboard && window.isSecureContext) {
-    try {
-      await navigator.clipboard.writeText(text);
-      return true;
-    } catch {
-      // fallback으로 이어짐
-    }
-  }
-
-  // Fallback: 임시 textarea 이용
-  const textarea = document.createElement('textarea');
-  textarea.value = text;
-  textarea.style.cssText =
-    'position:fixed;top:-9999px;left:-9999px;opacity:0';
-  document.body.appendChild(textarea);
-  textarea.focus();
-  textarea.select();
-
-  try {
-    const success = document.execCommand('copy');
-    document.body.removeChild(textarea);
-    return success;
-  } catch {
-    document.body.removeChild(textarea);
-    return false;
-  }
-}
-
-// ── 사용 예시 ──────────────────────────────────────
-document.querySelector('#copyBtn').addEventListener('click', async () => {
-  const success = await copyToClipboard('복사할 텍스트');
-  if (success) {
-    btn.textContent = '✓ 복사됨';
-    setTimeout(() => { btn.textContent = '복사'; }, 2000);
-  }
-});`
-  },
-  {
-    title: 'useIntersectionObserver',
-    code: `import { useEffect, useRef, useState } from 'react';
-
-/**
- * useIntersectionObserver
- * 요소가 뷰포트에 진입하는지 감지하는 커스텀 훅
- */
-function useIntersectionObserver(options = {}) {
-  const ref = useRef(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsVisible(entry.isIntersecting);
-
-        // 한 번 보이면 더 이상 감지 안 함 (once 옵션)
-        if (entry.isIntersecting && options.once) {
-          observer.unobserve(element);
-        }
-      },
-      {
-        threshold: options.threshold ?? 0.1,
-        rootMargin: options.rootMargin ?? '0px',
-        root: options.root ?? null,
-      }
-    );
-
-    observer.observe(element);
-    return () => observer.unobserve(element);
-  }, [options.threshold, options.rootMargin, options.once]);
-
-  return [ref, isVisible];
-}
-
-// ── 사용 예시 ──────────────────────────────────────
-function AnimatedSection({ children }) {
-  const [ref, isVisible] = useIntersectionObserver({ once: true });
-
-  return (
-    <div
-      ref={ref}
-      style={{
-        opacity: isVisible ? 1 : 0,
-        transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
-        transition: 'all 0.6s ease',
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
-export default useIntersectionObserver;`
-  },
-  {
-    title: 'HTTP 요청 래퍼',
-    code: `import requests
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
-from typing import Any, Dict, Optional
-
-
-class HttpClient:
-    """재시도·타임아웃·에러 핸들링이 포함된 HTTP 클라이언트"""
-
-    def __init__(
-        self,
-        base_url: str = "",
-        timeout: int = 10,
-        max_retries: int = 3,
-        headers: Optional[Dict[str, str]] = None,
-    ):
-        self.base_url = base_url.rstrip("/")
-        self.timeout = timeout
-        self.session = requests.Session()
-
-        # 재시도 전략
-        retry = Retry(
-            total=max_retries,
-            backoff_factor=0.5,
-            status_forcelist=[429, 500, 502, 503, 504],
-        )
-        adapter = HTTPAdapter(max_retries=retry)
-        self.session.mount("http://", adapter)
-        self.session.mount("https://", adapter)
-
-        if headers:
-            self.session.headers.update(headers)
-
-    def get(self, path: str, **kwargs) -> Any:
-        return self._request("GET", path, **kwargs)
-
-    def post(self, path: str, json: Dict = None, **kwargs) -> Any:
-        return self._request("POST", path, json=json, **kwargs)
-
-    def _request(self, method: str, path: str, **kwargs) -> Any:
-        url = f"{self.base_url}/{path.lstrip('/')}" if path else self.base_url
-        try:
-            resp = self.session.request(
-                method, url, timeout=self.timeout, **kwargs
-            )
-            resp.raise_for_status()
-            return resp.json()
-        except requests.Timeout:
-            raise TimeoutError(f"요청 타임아웃: {url}")
-        except requests.HTTPError as e:
-            raise RuntimeError(f"HTTP 에러 {e.response.status_code}: {url}")
-        except requests.RequestException as e:
-            raise ConnectionError(f"요청 실패: {e}")
-
-
-# ── 사용 예시 ─────────────────────────────────────
-if __name__ == "__main__":
-    client = HttpClient(
-        base_url="https://jsonplaceholder.typicode.com",
-        headers={"Authorization": "Bearer YOUR_TOKEN"},
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X_scaled, y, test_size=0.2, random_state=42, stratify=y
     )
-    data = client.get("/todos/1")
-    print(data)`
-  },
-];
+    return X_train, X_valid, y_train, y_valid
 
-// ─── STATE ───────────────────────────────────────
-let activeFilter = 'all';
-let currentSnippetIdx = null;
+if __name__ == "__main__":
+    X_train, X_valid, y_train, y_valid = build_training_data("dataset.csv")
+    print("train:", X_train.shape, "valid:", X_valid.shape)`;
 
-// ─── FILTER ──────────────────────────────────────
-function setFilter(cat, btn) {
-  activeFilter = cat;
-  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  filterCards();
-}
+let bodyScrollPad = 0;
 
-function filterCards() {
-  const q = document.getElementById('searchInput').value.toLowerCase().trim();
-  const cards = document.querySelectorAll('.res-card');
-  let count = 0;
-
-  cards.forEach(card => {
-    const catMatch = activeFilter === 'all' || card.dataset.category === activeFilter;
-    const tags = card.dataset.tags || '';
-    const title = card.querySelector('.res-title').textContent.toLowerCase();
-    const desc = card.querySelector('.res-desc').textContent.toLowerCase();
-    const searchMatch = !q || tags.includes(q) || title.includes(q) || desc.includes(q);
-
-    if (catMatch && searchMatch) {
-      card.style.display = '';
-      count++;
-    } else {
-      card.style.display = 'none';
-    }
-  });
-
-  document.getElementById('resultCount').textContent = count + '개';
-  document.getElementById('noResults').style.display = count === 0 ? 'block' : 'none';
-}
-
-// ─── COPY (card button) ──────────────────────────
-function copySnippet(idx, btn) {
-  const code = SNIPPETS[idx].code;
-  navigator.clipboard.writeText(code).then(() => {
-    btn.classList.add('copied');
-    btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 복사됨`;
-    setTimeout(() => {
-      btn.classList.remove('copied');
-      btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> 복사`;
-    }, 2000);
-  });
-}
-
-// ─── OPEN MODAL ──────────────────────────────────
-document.querySelectorAll('.res-card').forEach(card => {
-  card.addEventListener('click', (e) => {
-    if (e.target.closest('.copy-btn')) return;
-    const idx = parseInt(card.dataset.codeId);
-    openModal(idx);
-  });
+document.getElementById('resourceCard').addEventListener('click', (e) => {
+  if (e.target.closest('.copy-btn')) return;
+  openModal();
 });
 
-function openModal(idx) {
-  currentSnippetIdx = idx;
-  const s = SNIPPETS[idx];
-  document.getElementById('modalTitle').textContent = s.title;
-  document.getElementById('modalCode').textContent = s.code;
-  document.getElementById('codeOverlay').classList.add('open');
+function openModal() {
+  document.getElementById('modalCode').textContent = SNIPPET;
+  const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+  bodyScrollPad = scrollbarWidth > 0 ? scrollbarWidth : 0;
+  document.body.style.paddingRight = bodyScrollPad + 'px';
   document.body.style.overflow = 'hidden';
-  // Reset copy btn
-  const btn = document.getElementById('modalCopyBtn');
-  btn.classList.remove('copied');
-  btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> 복사하기`;
+  document.getElementById('codeOverlay').classList.add('open');
 }
 
 function closeModal() {
   document.getElementById('codeOverlay').classList.remove('open');
   document.body.style.overflow = '';
+  document.body.style.paddingRight = '';
 }
 
 function handleOverlay(e) {
   if (e.target === document.getElementById('codeOverlay')) closeModal();
 }
 
-function copyFromModal() {
-  if (currentSnippetIdx === null) return;
-  const code = SNIPPETS[currentSnippetIdx].code;
-  const btn = document.getElementById('modalCopyBtn');
-  navigator.clipboard.writeText(code).then(() => {
-    btn.classList.add('copied');
-    btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 복사됨!`;
-    setTimeout(() => {
-      btn.classList.remove('copied');
-      btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> 복사하기`;
-    }, 2000);
-  });
+function copySnippet(e) {
+  e.stopPropagation();
+  navigator.clipboard.writeText(SNIPPET);
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+function copyFromModal(e) {
+  e.stopPropagation();
+  navigator.clipboard.writeText(SNIPPET);
+}
 
-// ─── INIT ─────────────────────────────────────────
-filterCards();
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
 </script>
 </body>
 </html>
